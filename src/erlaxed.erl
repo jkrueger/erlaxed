@@ -13,6 +13,8 @@
 -export([store/2, store/3]).
 -export([view/2, view/3]).
 
+-type proplist()::list(tuple()).
+
 -spec config() -> any().
 config() ->
     config(<<"http://127.0.0.1:5984">>, []).
@@ -71,7 +73,7 @@ view(DB, {Design0, View0}, Options) ->
     Design = etbx:to_binary(Design0),
     View   = etbx:to_binary(View0),
     Endpoint = <<"_design/", Design/binary, "/_view/", View/binary>>,
-    unpack_rows(erlaxed_client:get(DB, Endpoint, Options)).
+    erlaxed_client:get(DB, Endpoint, Options).
 
 %% @private
 return_doc(DB, {ok, Handle}) ->
@@ -100,24 +102,13 @@ strip_body(Else) ->
     Else.
 
 %% @private
+-spec to_json(map() | proplist() | tuple()) -> tuple().
 to_json(M) when is_map(M) ->
     {maps:to_list(M)};
 to_json(L) when is_list(L) ->
     {L};
 to_json({L} = X) when is_list(L) ->
     X.
-
-unpack_json({Json}) ->
-    Json;
-unpack_json({ok, {Json}}) ->
-    Json;
-unpack_json(Else) ->
-    Else.
-
-unpack_rows({ok, {Json}}) ->
-    get_value(<<"rows">>, Json);
-unpack_rows(Else) ->
-    Else.
 
 %% @private
 get_value(K, {Doc}) ->

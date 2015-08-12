@@ -8,6 +8,7 @@
 -module(erlaxed).
 -export([config/0, config/1, config/2]).
 -export([connect/2]).
+-export([create/2, create/3]).
 -export([delete/1, delete/2]).
 -export([fetch/2]).
 -export([store/2, store/3]).
@@ -31,8 +32,13 @@ config(Host, Options) ->
 -spec connect(any(), binary() | string()) -> any().
 connect(Config, Name0) ->
     Name = etbx:to_binary(Name0),
-    DB   = etbx:update(db, Name, Config),
-    ensure_db(DB).
+    etbx:update(db, Name, Config).
+
+create(Config, Name) ->
+    create(Config, Name, []).
+
+create(Config, Name, Options) ->
+    ensure_db(connect(Config, Name), Options).
 
 delete(DB) ->
     strip_body(erlaxed_client:delete(DB)).
@@ -57,13 +63,16 @@ store(DB, Id, Doc) ->
     erlaxed_client:put(DB, Id, to_json(Doc)).
 
 %% @private
-ensure_db(DB) ->
-    ensure_db(strip_body(erlaxed_client:get(DB)), DB).
-ensure_db(ok, DB) ->
+ensure_db(DB, Options) ->
+    ensure_db(DB, strip_body(erlaxed_client:get(DB)), Options).
+
+ensure_db(DB, ok, _) ->
     {ok, DB};
-ensure_db({error, not_found}, DB) ->
+ensure_db(_DB, {error, not_found}, [exclusive]) ->
+    {error, database_exists};
+ensure_db(DB, {error, not_found}, _Options) ->
     maybe(erlaxed_client:put(DB), DB);
-ensure_db(Error, _) ->
+ensure_db(Error, _, _) ->
     Error.
 
 view(DB, View) ->

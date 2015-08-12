@@ -71,7 +71,7 @@ view(DB, {Design0, View0}, Options) ->
     Design = etbx:to_binary(Design0),
     View   = etbx:to_binary(View0),
     Endpoint = <<"_design/", Design/binary, "/_view/", View/binary>>,
-    erlaxed_client:get(DB, Endpoint, Options).
+    unpack_json(erlaxed_client:get(DB, Endpoint, Options)).
 
 %% @private
 return_doc(DB, {ok, Handle}) ->
@@ -106,6 +106,11 @@ to_json(L) when is_list(L) ->
     {L};
 to_json({L} = X) when is_list(L) ->
     X.
+
+unpack_json({Json}) ->
+    Json;
+unpack_json(Json) ->
+    Json.
 
 %% @private
 get_value(K, {Doc}) ->

@@ -71,7 +71,7 @@ view(DB, {Design0, View0}, Options) ->
     Design = etbx:to_binary(Design0),
     View   = etbx:to_binary(View0),
     Endpoint = <<"_design/", Design/binary, "/_view/", View/binary>>,
-    unpack_json(erlaxed_client:get(DB, Endpoint, Options)).
+    unpack_rows(erlaxed_client:get(DB, Endpoint, Options)).
 
 %% @private
 return_doc(DB, {ok, Handle}) ->
@@ -112,6 +112,11 @@ unpack_json({Json}) ->
 unpack_json({ok, {Json}}) ->
     Json;
 unpack_json(Else) ->
+    Else.
+
+unpack_rows({ok, {Json}}) ->
+    get_value(<<"rows">>, Json);
+unpack_rows(Else) ->
     Else.
 
 %% @private

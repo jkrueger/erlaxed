@@ -1,0 +1,14 @@
+{application, erlaxed,
+ [
+  {description, "The Erlang CouchdDB layer that lets you sleep at night"},
+  {vsn, "0.1.0"},
+  {modules, [erlaxed]},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  inets
+                 ]},
+  {mod, { erlaxed_app, []}},
+  {env, []}
+ ]}.

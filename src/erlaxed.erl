@@ -32,7 +32,7 @@ config(Host, Options) ->
 -spec connect(any(), binary() | string()) -> any().
 connect(Config, Name0) ->
     Name = etbx:to_binary(Name0),
-    etbx:update(db, Name, Config).
+    {ok, etbx:update(db, Name, Config)}.
 
 create(Config, Name) ->
     create(Config, Name, []).

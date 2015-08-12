@@ -7,7 +7,7 @@
 
 -module(erlaxed_client).
 -compile({no_auto_import,[put/1, put/2]}).
--export([delete/1, delete/2]).
+-export([delete/1, delete/2, delete/3]).
 -export([get/1, get/2, get/3]).
 -export([put/1, put/2, put/3]).
 -export([post/2]).
@@ -19,6 +19,12 @@ delete(Connection) ->
 
 delete(Connection, Endpoint) ->
     URL      = endpoint(Connection, Endpoint),
+    Response = httpc:request(delete, {URL, []}, [], []),
+    interpret_response(Response).
+
+delete(Connection, Endpoint, Rev) ->
+    Endpoint = endpoint(Connection, Endpoint),
+    URL      = Endpoint ++ "?rev=" ++ etbx:to_string(Rev),
     Response = httpc:request(delete, {URL, []}, [], []),
     interpret_response(Response).
 

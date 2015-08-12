@@ -44,11 +44,12 @@ delete(DB) ->
     strip_body(erlaxed_client:delete(DB)).
 
 delete(DB, Doc) ->
-    case get_value(<<"_id">>, Doc) of
-        undefined ->
+    Id  = get_value(<<"_id">>, Doc),
+    Rev = get_value(<<"_rev">>, Doc),
+    if ((Id =:= undefined) or (Rev =:= undefined)) ->
             {error, not_a_doc};
-        Id ->
-            erlaxed_client:delete(DB, Id)
+       true ->
+            erlaxed_client:delete(DB, Id, Rev)
     end.
 
 fetch(DB, Id) ->

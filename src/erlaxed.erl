@@ -107,10 +107,10 @@ to_json(L) when is_list(L) ->
 to_json({L} = X) when is_list(L) ->
     X.
 
-unpack_json({Json}) ->
+unpack_json({ok, {Json}}) ->
     Json;
-unpack_json(Json) ->
-    Json.
+unpack_json(Else) ->
+    Else.
 
 %% @private
 get_value(K, {Doc}) ->

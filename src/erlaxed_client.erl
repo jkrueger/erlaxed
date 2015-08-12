@@ -22,8 +22,8 @@ delete(Connection, Endpoint) ->
     Response = httpc:request(delete, {URL, []}, [], []),
     interpret_response(Response).
 
-delete(Connection, Endpoint, Rev) ->
-    Endpoint = endpoint(Connection, Endpoint),
+delete(Connection, Endpoint0, Rev) ->
+    Endpoint = endpoint(Connection, Endpoint0),
     URL      = Endpoint ++ "?rev=" ++ etbx:to_string(Rev),
     Response = httpc:request(delete, {URL, []}, [], []),
     interpret_response(Response).

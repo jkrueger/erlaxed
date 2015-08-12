@@ -6,15 +6,20 @@
 %%
 
 -module(erlaxed).
--export([config/0, config/2]).
+-export([config/0, config/1, config/2]).
 -export([connect/2]).
 -export([delete/1, delete/2]).
+-export([fetch/2]).
 -export([store/2, store/3]).
 -export([view/2, view/3]).
 
 -spec config() -> any().
 config() ->
     config(<<"http://127.0.0.1:5984">>, []).
+
+-spec config(binary()) -> any().
+config(Host) ->
+    config(Host, []).
 
 -spec config(string() | binary(), map()) -> any().
 config(Host, Options) ->
@@ -37,6 +42,9 @@ delete(DB, Doc) ->
         Id ->
             erlaxed_client:delete(DB, Id)
     end.
+
+fetch(DB, Id) ->
+    erlaxed_client:get(DB, Id).
 
 store(DB, Doc) ->
     store(DB, get_value(<<"_id">>, Doc), Doc).

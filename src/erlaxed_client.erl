@@ -120,5 +120,9 @@ interpret_response({ok, {409, _}}) ->
     {error, conflict};
 interpret_response({ok, {500, _}}) ->
     {error, internal_error};
+interpret_response({ok, {502, _}}) ->
+    {error, bad_gateway};
+interpret_response({ok, {503, _}}) ->
+    {error, busy};
 interpret_response({error, Reason}) ->
     {error, Reason}.

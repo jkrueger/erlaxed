@@ -61,7 +61,7 @@ store(DB, Doc) ->
 store(DB, undefined, Doc) ->
     return_doc(DB, erlaxed_client:post(DB, to_json(Doc)));
 store(DB, Id, Doc) ->
-    erlaxed_client:put(DB, Id, to_json(Doc)).
+    return_doc(DB, erlaxed_client:put(DB, Id, to_json(Doc))).
 
 %% @private
 ensure_db(DB, Options) ->
